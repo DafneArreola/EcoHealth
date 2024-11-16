@@ -1,8 +1,10 @@
-from flask import Flask, render_template
+from flask import render_template, session, redirect, url_for, request
+from backend import create_app
 
-app = Flask(__name__, template_folder="frontend/templates", static_folder="frontend/static")
-app.secret_key = " "
+# Initialize Flask app using create_app
+app = create_app()
 
+# Home Page
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -24,14 +26,14 @@ def login():
     
     return render_template('login.html')
 
-# Dashboard (or redirect after login)
+# Dashboard Page
 @app.route('/dashboard')
 def dashboard():
     if 'user' in session:
         return f"Welcome, {session['user']}! <a href='/logout'>Logout</a>"
     return redirect(url_for('login'))
 
-# Logout
+# Logout Page
 @app.route('/logout')
 def logout():
     session.pop('user', None)

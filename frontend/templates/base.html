@@ -4,32 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}EcoHealth AI{% endblock %}</title>
+
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/animations.js') }}" defer></script>
+
+    <!-- Meta and Additional Styles -->
+    {% block head %}
+    {% endblock %}
 </head>
 <body>
+    <!-- Header Section -->
     <header>
-        <div class="header-content">
-            <h1>Welcome to EcoHealth AI</h1>
-            <p>Your AI-powered guide to eco-friendly living.</p>
-            <button class="login-btn">Log In</button>
-        </div>
+        <nav class="nav-bar">
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <nav>
-        <ul>
-            <li><a href="{{ url_for('home') }}">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Terms of Service</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-    </nav>
-
+    <!-- Main Content Placeholder -->
     <main>
         {% block content %}
         {% endblock %}
     </main>
 
+    <!-- Footer Section -->
     <footer>
         <p>© 2024 EcoHealth AI. All rights reserved.</p>
     </footer>

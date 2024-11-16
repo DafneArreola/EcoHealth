@@ -1,20 +1,37 @@
 {% extends "base.html" %}
 
-{% block title %}
-Home - EcoHealth AI
-{% endblock %}
-
 {% block content %}
-<section id="features">
-    <div class="feature">
-        <img src="{{ url_for('static', filename='images/icon1.png') }}" alt="Feature 1">
-        <h3>Eco Goals</h3>
-        <p>Set and track eco-friendly goals with AI insights.</p>
+<header class="hero">
+    <div class="hero-content">
+        <h1 class="hero-title">EcoHealth</h1>
+        <p class="hero-subtitle">Your eco-friendly guide powered by AI.</p>
+        <a href="/login" class="cta-button">Login</a>
     </div>
-    <div class="feature">
-        <img src="{{ url_for('static', filename='images/icon2.png') }}" alt="Feature 2">
-        <h3>Eco Palette</h3>
-        <p>Discover your personalized eco-friendly lifestyle palette.</p>
+    <div class="hero-animations">
+        <div class="animated-circle"></div>
+        <div class="animated-circle2"></div>
+        <div class="animated-circle3"></div>
+        <div class="animated-circle4"></div>
+        <!-- <div class="animated-line"></div> -->
     </div>
-</section>
+</header>
+
+<main>
+    <section id="features" class="features-section">
+        <div class="feature">
+            <h2>Eco Goals</h2>
+            <p>Track and achieve eco-friendly goals with AI insights.</p>
+        </div>
+        <div class="feature">
+            <h2>Eco Palette</h2>
+            <p>Personalize your lifestyle with our eco palette generator.</p>
+        </div>
+    </section>
+
+    <section class="scroll-triggered">
+        <h2>Join the Movement</h2>
+        <p>Empowering sustainability with the power of AI.</p>
+    </section>
+</main>
+
 {% endblock %}

@@ -2,6 +2,11 @@ from typing import Dict, Any
 import json
 from datetime import datetime
 import copy
+import os
+from openai import OpenAI
+from typing import List
+from dotenv import load_dotenv
+load_dotenv()
 
 class DigitalTwin:
     """
@@ -426,6 +431,69 @@ class DigitalTwin:
 
         return carbon
 
+    def get_smart_recommendations(self, num_recommendations: int = 3) -> Dict[str, Any]:
+        """
+        Generate personalized recommendations using ChatGPT based on current state.
+        Returns the raw response for simpler display.
+        """
+        try:
+            # Get API key and validate
+            api_key = os.getenv("OPENAI_API_KEY")
+            if not api_key:
+                raise ValueError("OPENAI_API_KEY not found in environment variables")
+            
+            # Initialize the OpenAI client
+            client = OpenAI(api_key=api_key)
+
+            # Generate prompt based on current state
+            prompt = f"""Provide {num_recommendations} brief, actionable recommendations based on this user's profile:
+
+    Transportation Score: {self.current_state['environmental']['transportation']['score']}/100 
+    Key Factors: {', '.join(self.current_state['environmental']['transportation']['key_factors'])}
+
+    Diet Score: {self.current_state['environmental']['diet']['score']}/100
+    Key Factors: {', '.join(self.current_state['environmental']['diet']['key_factors'])}
+
+    Exercise Score: {self.current_state['health']['exercise']['score']}/100
+    Key Factors: {', '.join(self.current_state['health']['exercise']['key_factors'])}
+
+    Carbon Footprint: {self.current_state['carbon_footprint']} tons CO2/year
+
+    Format each recommendation as:
+    Recommendation #:
+    - Change: [one sentence description]
+    - Benefits: [health and environmental impacts]
+    - Timeline: [when to expect results]"""
+
+            # Call ChatGPT API
+            try:
+                response = client.chat.completions.create(
+                    model="gpt-4",
+                    messages=[
+                        {"role": "system", "content": """You are a  health and environmental advisor. 
+                        You keep it real, down to earth. Provide brief, practical recommendations focusing on measurable impacts."""},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=0.7,
+                    max_tokens=400  # Reduced for shorter responses
+                )
+                
+                return {
+                    'status': 'success',
+                    'recommendations': response.choices[0].message.content
+                }
+            
+            except Exception as e:
+                return {
+                    'status': 'error',
+                    'message': f'OpenAI API error: {str(e)}'
+                }
+                
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': str(e)
+            }
 
 # Example usage:
 if __name__ == "__main__":

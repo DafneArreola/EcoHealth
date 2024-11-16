@@ -91,9 +91,58 @@ def test_jessica_scenario():
     print("\nTest 4 - Jessica's Simulation Results:")
     simulation = jessica_twin.simulate_scenario(scenario)
     print(json.dumps(simulation, indent=2))
+    
+def test_smart_recommendations():
+    """Test getting smart recommendations"""
+    jessica_twin = DigitalTwin("jessica_chen")
+
+    # Jessica's initial data (define it here or move it to global scope)
+    initial_data = {
+        "environmental": {
+            "transportation": {
+                "primary_mode": "hybrid car",
+                "miles_per_day": 120,
+                "public_transit": "0 times per week"
+            },
+            "diet": {
+                "type": "unrestricted",
+                "local_food_percent": 60,
+                "composting": True
+            },
+            "consumption": {
+                "packaging": "prefers minimal",
+                "repair_habits": "tries to repair before replacing",
+                "zero_waste_efforts": ["reusable bags", "water bottle"]
+            }
+        },
+        "health": {
+            "exercise": {
+                "frequency": "4-5 times per week",
+                "activities": ["yoga", "cycling", "hiking"],
+                "average_duration": 45
+            },
+            "sleep": {
+                "average_hours": 7.5,
+                "quality": "good"
+            },
+            "wellness": {
+                "stress_level": "moderate"
+            }
+        }
+    }
+
+    # First update with initial data
+    result = jessica_twin.update_state(initial_data)
+
+    # Get smart recommendations
+    recommendations = jessica_twin.get_smart_recommendations()
+
+    print("\nTest 5 - Jessica's Smart Recommendations:")
+    print(json.dumps(recommendations, indent=3))
 
 if __name__ == "__main__":
     # Run all tests
     test_initial_state()
     test_update_with_minimal_data()
     test_jessica_scenario()
+    test_smart_recommendations()

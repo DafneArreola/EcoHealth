@@ -1,0 +1,94 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #eef5e9;
+    color: #333;
+}
+
+header {
+    text-align: center;
+    padding: 50px;
+    background-color: #d6eadf;
+    border-bottom: 2px solid #9bcf99;
+}
+
+header h1 {
+    color: #4caf50;
+    font-size: 2.5rem;
+}
+
+header p {
+    margin-top: 10px;
+    font-size: 1.2rem;
+}
+
+.login-btn {
+    margin-top: 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.login-btn:hover {
+    background-color: #388e3c;
+}
+
+nav {
+    background-color: #4caf50;
+    padding: 10px 0;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 0 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+main {
+    text-align: center;
+    padding: 50px;
+}
+
+main #features {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+main #features .feature {
+    text-align: center;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 200px;
+}
+
+footer {
+    background-color: #4caf50;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 50px;
+}

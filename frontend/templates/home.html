@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home - EcoHealth AI
+{% endblock %}
+
+{% block content %}
+<section id="features">
+    <div class="feature">
+        <img src="{{ url_for('static', filename='images/icon1.png') }}" alt="Feature 1">
+        <h3>Eco Goals</h3>
+        <p>Set and track eco-friendly goals with AI insights.</p>
+    </div>
+    <div class="feature">
+        <img src="{{ url_for('static', filename='images/icon2.png') }}" alt="Feature 2">
+        <h3>Eco Palette</h3>
+        <p>Discover your personalized eco-friendly lifestyle palette.</p>
+    </div>
+</section>
+{% endblock %}

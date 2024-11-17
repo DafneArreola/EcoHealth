@@ -244,7 +244,7 @@ def register_page():
 # Handle redirection after successful registration
 @app.route('/redirect-after-register', methods=['GET'])
 def redirect_after_register():
-    return redirect(url_for('login_page'))
+    return redirect(url_for('complete_profile_page'))
 
 # Forgot Password Page
 @app.route('/forgot-password', methods=['GET', 'POST'])
@@ -254,6 +254,22 @@ def forgot_password():
         # Dummy response for demonstration
         return render_template('forgot_password.html', message="Check your email for reset instructions.")
     return render_template('forgot_password.html')
+
+
+@app.route('/complete-profile', methods=['GET'])
+def complete_profile_page():
+    # Check if the user is logged in (example using session)
+    if 'user' not in session:
+        return redirect(url_for('login'))
+
+    # Fetch user data for pre-filling the form (if needed)
+    username = session['user']
+    #user = find_user(username)
+    if not username:
+        return redirect(url_for('register'))
+
+    # Render the profile completion form
+    return render_template('fill_profile.html', user=username)
 
 
 @app.route('/test')

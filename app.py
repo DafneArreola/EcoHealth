@@ -32,7 +32,10 @@ def login():
 @app.route('/dashboard')
 def dashboard():
     if 'user' in session:
-        return f"Welcome, {session['user']}! <a href='/logout'>Logout</a>"
+        # Pass the mock twin state to the template
+        return render_template('dashboard.html', 
+                             username=session['user'],
+                             twin_state=mock_twin_state)
     return redirect(url_for('login'))
 
 # Logout Page

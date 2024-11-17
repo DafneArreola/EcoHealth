@@ -5,6 +5,7 @@
     left: 50%;
     transform: translateX(-50%);
     z-index: 100;
+    background: #4caf50;
 }
 
 .nav-links {
@@ -221,3 +222,5 @@ body, html {
         transform: translateY(-50px);
     }
 }
+
+

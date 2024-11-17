@@ -6,6 +6,23 @@ from backend.routes import api
 app = create_app()
 #app.register_blueprint(api, url_prefix="/api")
 
+mock_twin_state = {
+    'environmental': {
+        'transportation': {'score': 65, 'key_factors': ['Uses hybrid vehicle', 'High daily mileage']},
+        'diet': {'score': 70, 'key_factors': ['60% local food', 'Moderate meat consumption']},
+        'consumption': {'score': 75, 'key_factors': ['Minimal packaging', 'Regular recycling']},
+        'overall_score': 70
+    },
+    'health': {
+        'exercise': {'score': 85, 'key_factors': ['Regular activity', 'Diverse exercises']},
+        'sleep': {'score': 80, 'key_factors': ['Good sleep quality', '7.5 hours average']},
+        'wellness': {'score': 75, 'key_factors': ['Moderate stress', 'Regular meditation']},
+        'overall_score': 80
+    },
+    'carbon_footprint': 8.5,
+    'combined_score': 75
+}
+
 # Home Page
 @app.route('/')
 def home():

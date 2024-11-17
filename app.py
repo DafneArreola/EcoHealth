@@ -9,7 +9,7 @@ app = create_app()
 # Home Page
 @app.route('/')
 def home():
-    return render_template('test_page.html')
+    return render_template('home.html')
 
 # Login Page
 @app.route('/login', methods=['GET', 'POST'])

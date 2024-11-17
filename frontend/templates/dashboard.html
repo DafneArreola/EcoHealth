@@ -4,6 +4,7 @@
 
 <!-- Hero Section -->
 <header class="hero dashboard-hero">
+    
     <div class="hero-content">
         <h1 class="hero-title">Welcome, {{ username }}</h1>
         <p class="hero-subtitle">Explore your Digital Twin Dashboard</p>
@@ -31,50 +32,156 @@
             <!-- Environmental Score Card -->
             <div class="score-card feature">
                 <h3>🌿 Environmental Score</h3>
-                <p class="main-score">{{ twin_state.environmental.overall_score }}/100</p>
-                <ul class="sub-scores">
-                    <li>Transportation: {{ twin_state.environmental.transportation.score }}/100</li>
-                    <li>Diet: {{ twin_state.environmental.diet.score }}/100</li>
-                    <li>Consumption: {{ twin_state.environmental.consumption.score }}/100</li>
-                </ul>
+                <p class="main-score">{{ "%.1f"|format(twin_state.environmental.overall_score) }}/100</p>
+                <div class="sub-scores">
+                    <div class="sub-score">
+                        <span>Transportation:</span>
+                        <span>{{ "%.1f"|format(twin_state.environmental.transportation.score) }}/100</span>
+                    </div>
+                    {% if twin_state.environmental.transportation.key_factors %}
+                    <div class="key-factors">
+                        <span class="factor-label">Key Factors:</span>
+                        <ul>
+                            {% for factor in twin_state.environmental.transportation.key_factors %}
+                            <li>{{ factor }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <div class="sub-score">
+                        <span>Diet:</span>
+                        <span>{{ "%.1f"|format(twin_state.environmental.diet.score) }}/100</span>
+                    </div>
+                    {% if twin_state.environmental.diet.key_factors %}
+                    <div class="key-factors">
+                        <span class="factor-label">Key Factors:</span>
+                        <ul>
+                            {% for factor in twin_state.environmental.diet.key_factors %}
+                            <li>{{ factor }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <div class="sub-score">
+                        <span>Consumption:</span>
+                        <span>{{ "%.1f"|format(twin_state.environmental.consumption.score) }}/100</span>
+                    </div>
+                    {% if twin_state.environmental.consumption.key_factors %}
+                    <div class="key-factors">
+                        <span class="factor-label">Key Factors:</span>
+                        <ul>
+                            {% for factor in twin_state.environmental.consumption.key_factors %}
+                            <li>{{ factor }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
+
             <!-- Health Score Card -->
             <div class="score-card feature">
                 <h3>❤️ Health Score</h3>
-                <p class="main-score">{{ twin_state.health.overall_score }}/100</p>
-                <ul class="sub-scores">
-                    <li>Exercise: {{ twin_state.health.exercise.score }}/100</li>
-                    <li>Sleep: {{ twin_state.health.sleep.score }}/100</li>
-                    <li>Wellness: {{ twin_state.health.wellness.score }}/100</li>
-                </ul>
+                <p class="main-score">{{ "%.1f"|format(twin_state.health.overall_score) }}/100</p>
+                <div class="sub-scores">
+                    <div class="sub-score">
+                        <span>Exercise:</span>
+                        <span>{{ "%.1f"|format(twin_state.health.exercise.score) }}/100</span>
+                    </div>
+                    {% if twin_state.health.exercise.key_factors %}
+                    <div class="key-factors">
+                        <span class="factor-label">Key Factors:</span>
+                        <ul>
+                            {% for factor in twin_state.health.exercise.key_factors %}
+                            <li>{{ factor }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <div class="sub-score">
+                        <span>Sleep:</span>
+                        <span>{{ "%.1f"|format(twin_state.health.sleep.score) }}/100</span>
+                    </div>
+                    {% if twin_state.health.sleep.key_factors %}
+                    <div class="key-factors">
+                        <span class="factor-label">Key Factors:</span>
+                        <ul>
+                            {% for factor in twin_state.health.sleep.key_factors %}
+                            <li>{{ factor }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <div class="sub-score">
+                        <span>Wellness:</span>
+                        <span>{{ "%.1f"|format(twin_state.health.wellness.score) }}/100</span>
+                    </div>
+                    {% if twin_state.health.wellness.key_factors %}
+                    <div class="key-factors">
+                        <span class="factor-label">Key Factors:</span>
+                        <ul>
+                            {% for factor in twin_state.health.wellness.key_factors %}
+                            <li>{{ factor }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
+
             <!-- Carbon Footprint Card -->
             <div class="score-card feature">
                 <h3>🌍 Carbon Footprint</h3>
-                <p class="main-score">{{ twin_state.carbon_footprint }} tons/year</p>
+                <p class="main-score">{{ "%.1f"|format(twin_state.carbon_footprint) }} tons/year</p>
                 <p class="comparison">Global Average: 4 tons/year</p>
+                {% if twin_state.combined_score %}
+                <div class="combined-score">
+                    <span>Combined Score:</span>
+                    <span>{{ "%.1f"|format(twin_state.combined_score) }}/100</span>
+                </div>
+                {% endif %}
             </div>
         </div>
     </section>
 
     <!-- Simulation Section -->
-    <section id="simulation-section" class="dashboard-section scroll-triggered">
-        <h2>What-If Simulations</h2>
-        <div class="simulation-container feature">
-            <label for="change-type">Change Type:</label>
-            <select id="change-type" class="simulation-input">
-                <option value="transportation">Transportation</option>
-                <option value="diet">Diet</option>
-                <option value="exercise">Exercise</option>
-            </select>
-            <label for="change-description">Proposed Change:</label>
-            <input type="text" id="change-description" placeholder="e.g., Use public transit 3 days/week">
-            <button class="cta-button simulation-button">Simulate Impact</button>
-        </div>
-        <div id="simulation-results" class="scroll-triggered">
-            <!-- Results dynamically populated here -->
-        </div>
-    </section>
+    <!-- Replace the existing simulation section in dashboard.html -->
+<section id="simulation-section" class="dashboard-section scroll-triggered">
+    <h2>What-If Simulations</h2>
+    <div class="simulation-container feature">
+        <form id="simulation-form" class="space-y-4">
+            <div class="form-group">
+                <label for="change-type">Change Type:</label>
+                <select id="change-type" name="change-type" class="simulation-input" required>
+                    <option value="transportation">Transportation</option>
+                    <option value="diet">Diet</option>
+                    <option value="exercise">Exercise</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="change-description">Proposed Change:</label>
+                <input type="text" 
+                       id="change-description" 
+                       name="change-description"
+                       class="simulation-input" 
+                       placeholder="e.g., Use public transit 3 days/week"
+                       required>
+            </div>
+            <button type="submit" class="cta-button simulation-button">
+                Simulate Impact
+            </button>
+        </form>
+    </div>
+    <div id="simulation-results" class="scroll-triggered">
+        <!-- Results will be dynamically populated here -->
+    </div>
+</section>
 </main>
+<script src="{{ url_for('static', filename='js/digital-twin.js') }}"></script>
+
 
 {% endblock %}

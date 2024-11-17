@@ -1,6 +1,8 @@
-from flask import render_template, session, redirect, url_for, request
+from flask import render_template, session, redirect, url_for, request, jsonify
 from backend import create_app
 from backend.routes import api
+from backend.poc import DigitalTwin
+from backend.database import find_user
 
 # Initialize Flask app using create_app
 app = create_app()
@@ -48,12 +50,106 @@ def login():
 # Dashboard Page
 @app.route('/dashboard')
 def dashboard():
-    if 'user' in session:
-        # Pass the mock twin state to the template
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    
+    username = session['user']
+    
+    # For admin user, use mock data
+    if username == 'admin':
         return render_template('dashboard.html', 
-                             username=session['user'],
+                             username=username,
                              twin_state=mock_twin_state)
-    return redirect(url_for('login'))
+    
+    # For other users, create new Digital Twin with default state
+    twin = DigitalTwin(username)
+    return render_template('dashboard.html', 
+                         username=username,
+                         twin_state=twin.current_state)
+
+# API endpoint for Digital Twin simulation
+@app.route('/api/simulate', methods=['POST'])
+def simulate_changes():
+    if 'user' not in session:
+        return jsonify({'error': 'Not logged in'}), 401
+    
+    try:
+        username = session['user']
+        changes = request.json
+        
+        if username == 'admin':
+            # For admin user, initialize with mock state
+            twin = DigitalTwin(username)
+            mock_data = {
+                "environmental": {
+                    "transportation": {
+                        "primary_mode": "hybrid car",
+                        "miles_per_day": 30,
+                        "public_transit": "2 times per week"
+                    },
+                    "diet": {
+                        "type": "unrestricted",
+                        "local_food_percent": 60,
+                        "composting": True
+                    },
+                    "consumption": {
+                        "packaging": "minimal",
+                        "repair_habits": "tries to repair",
+                        "zero_waste_efforts": ["reusable bags", "water bottle"]
+                    }
+                },
+                "health": {
+                    "exercise": {
+                        "frequency": "3-4 times per week",
+                        "activities": ["running", "yoga"],
+                        "average_duration": 45
+                    },
+                    "sleep": {
+                        "average_hours": 7.5,
+                        "quality": "good"
+                    },
+                    "wellness": {
+                        "stress_level": "moderate"
+                    }
+                }
+            }
+            twin.update_state(mock_data)
+        else:
+            # For other users, get their current data
+            twin = DigitalTwin(username)
+            user_data = find_user(username)
+            if user_data:
+                update_data = {
+                    'environmental': user_data.get('environmental_data', {}),
+                    'health': user_data.get('health_data', {})
+                }
+                twin.update_state(update_data)
+        
+        # Run actual simulation using DigitalTwin class
+        result = twin.simulate_scenario(changes)
+        
+        if result['status'] == 'success':
+            return jsonify(result)
+        else:
+            app.logger.error(f"Simulation failed: {result.get('message')}")
+            return jsonify({'error': result.get('message')}), 500
+            
+    except Exception as e:
+        app.logger.error(f"Simulation error: {str(e)}")
+        return jsonify({'error': 'Failed to run simulation'}), 500
+
+# API endpoint for recommendations
+@app.route('/api/recommendations')
+def get_recommendations():
+    if 'user' not in session:
+        return jsonify({'error': 'Not logged in'}), 401
+    
+    username = session['user']
+    twin = DigitalTwin(username)
+    
+    # Get recommendations
+    recommendations = twin.get_smart_recommendations()
+    return jsonify(recommendations)
 
 # Logout Page
 @app.route('/logout')

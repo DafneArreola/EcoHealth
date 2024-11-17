@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EcoHealth AI{% endblock %}</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/animations.js') }}" defer></script>
+
+    <!-- Meta and Additional Styles -->
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <nav class="nav-bar">
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content Placeholder -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>© 2024 EcoHealth AI. All rights reserved.</p>
+    </footer>
+</body>
+</html>

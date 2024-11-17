@@ -1,3 +1,6 @@
 flask
 flask_pymongo
 pymongo
+openai
+python-dotenv
+Flask-Session

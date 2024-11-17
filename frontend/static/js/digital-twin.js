@@ -340,3 +340,130 @@ const styles = `
         transform: translateY(0);
     }
 `;
+// Add this to your digital-twin.js file or create a new recommendations.js file
+document.addEventListener('DOMContentLoaded', function() {
+    // Initial load of recommendations
+    loadRecommendations();
+
+    // Add click handler for refresh button
+    const refreshButton = document.getElementById('refresh-recommendations');
+    if (refreshButton) {
+        refreshButton.addEventListener('click', loadRecommendations);
+    }
+});
+
+function loadRecommendations() {
+    const recommendationsGrid = document.getElementById('recommendations-grid');
+    if (!recommendationsGrid) return;
+
+    // Show loading state
+    recommendationsGrid.innerHTML = `
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading recommendations...</p>
+        </div>
+    `;
+
+    // Fetch recommendations from the server
+    fetch('/api/recommendations')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                displayRecommendations(data.recommendations);
+            } else {
+                throw new Error(data.message || 'Failed to load recommendations');
+            }
+        })
+        .catch(error => {
+            recommendationsGrid.innerHTML = `
+                <div class="error-message">
+                    Failed to load recommendations. Please try again later.
+                    <br>
+                    Error: ${error.message}
+                </div>
+            `;
+        });
+}
+
+function displayRecommendations(recommendationsText) {
+    const recommendationsGrid = document.getElementById('recommendations-grid');
+    if (!recommendationsGrid) return;
+
+    // Parse the recommendations text
+    const recommendations = parseRecommendations(recommendationsText);
+    
+    // Clear the grid
+    recommendationsGrid.innerHTML = '';
+
+    // Add each recommendation as a card
+    recommendations.forEach((rec, index) => {
+        const card = document.createElement('div');
+        card.className = 'recommendation-card animate-on-scroll';
+        card.innerHTML = `
+            <h3>Recommendation ${index + 1}</h3>
+            <div class="recommendation-content">
+                <div class="recommendation-detail">
+                    <strong>Change:</strong> ${rec.change}
+                </div>
+                <div class="recommendation-detail">
+                    <strong>Benefits:</strong> ${rec.benefits}
+                </div>
+                <div class="recommendation-detail">
+                    <strong>Timeline:</strong> ${rec.timeline}
+                </div>
+            </div>
+        `;
+        recommendationsGrid.appendChild(card);
+    });
+
+    // Add animation
+    animateRecommendations();
+}
+
+function parseRecommendations(text) {
+    // Split the text into individual recommendations
+    const recommendations = [];
+    const sections = text.split('Recommendation');
+
+    sections.forEach(section => {
+        if (section.trim()) {
+            const rec = {};
+            
+            // Extract change
+            const changeMatch = section.match(/Change:(.*?)(?=Benefits:|$)/s);
+            if (changeMatch) rec.change = changeMatch[1].trim();
+
+            // Extract benefits
+            const benefitsMatch = section.match(/Benefits:(.*?)(?=Timeline:|$)/s);
+            if (benefitsMatch) rec.benefits = benefitsMatch[1].trim();
+
+            // Extract timeline
+            const timelineMatch = section.match(/Timeline:(.*?)(?=(?:Recommendation|\n|$))/s);
+            if (timelineMatch) rec.timeline = timelineMatch[1].trim();
+
+            if (rec.change) recommendations.push(rec);
+        }
+    });
+
+    return recommendations;
+}
+
+function animateRecommendations() {
+    const observerCallback = (entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    };
+
+    const observerOptions = {
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    document.querySelectorAll('.animate-on-scroll').forEach(element => {
+        observer.observe(element);
+    });
+}

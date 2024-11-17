@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const sendMessageButton = document.getElementById("send-message");
     const userInput = document.getElementById("user-input");
     const chatlog = document.getElementById("chatlog");
+    const suggestionsContainer = document.getElementById("chat-suggestions");
 
     // Show chatbot modal when the button is clicked
     chatbotButton.addEventListener("click", function () {
@@ -12,8 +13,31 @@ document.addEventListener("DOMContentLoaded", function () {
         // Add welcome message when chat is opened
         if (chatlog.children.length === 0) {
             addMessageToChatlog("bot", "Hi! I'm here to help you on your eco-health journey. What's on your mind?");
+            showSuggestions();
         }
     });
+
+    function showSuggestions() {
+        const suggestions = [
+            "Lacking motivation? 🌱",
+            "Want to make a difference? 🌍",
+            "Feeling overwhelmed? 💭"
+        ];
+
+        suggestionsContainer.innerHTML = '';
+        suggestions.forEach(suggestion => {
+            const button = document.createElement('button');
+            button.className = 'suggestion-button';
+            button.textContent = suggestion;
+            button.onclick = function() {
+                userInput.value = suggestion;
+                sendMessage();
+                suggestionsContainer.style.display = 'none';
+            };
+            suggestionsContainer.appendChild(button);
+        });
+        suggestionsContainer.style.display = 'flex';
+    }
 
     // Hide chatbot modal when the close button is clicked
     closeButton.addEventListener("click", function () {
@@ -27,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Handle sending messages when Send button is clicked
+    // Handle sending messages and displaying responses
     sendMessageButton.addEventListener("click", sendMessage);
 
     async function sendMessage() {
@@ -35,36 +59,26 @@ document.addEventListener("DOMContentLoaded", function () {
         if (message) {
             addMessageToChatlog("user", message);
             userInput.value = "";
+            suggestionsContainer.style.display = 'none';
 
             try {
-                // Get CSRF token from meta tag
-                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-                
-                // Send message to server
                 const response = await fetch("/chat", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "X-CSRFToken": csrfToken || "",
                     },
                     body: JSON.stringify({ message: message }),
-                    credentials: 'same-origin'
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
                 const data = await response.json();
-                
-                if (data.status === "success") {
+                if (data.status === 'success') {
                     addMessageToChatlog("bot", data.response);
                 } else {
-                    throw new Error(data.response || "Failed to get response");
+                    throw new Error(data.response || 'Failed to get response');
                 }
             } catch (error) {
-                console.error("Chat error:", error);
-                addMessageToChatlog("bot", "Sorry, I'm having trouble responding right now. Please try again in a moment.");
+                console.error("Error:", error);
+                addMessageToChatlog("bot", "Sorry, something went wrong. Please try again.");
             }
         }
     }
@@ -72,27 +86,22 @@ document.addEventListener("DOMContentLoaded", function () {
     function addMessageToChatlog(role, message) {
         const messageElement = document.createElement("div");
         messageElement.classList.add("message", role);
-        
-        // Create message content wrapper
-        const contentWrapper = document.createElement("div");
-        contentWrapper.classList.add("message-content");
-        
-        // Add icon/avatar element
-        const iconElement = document.createElement("span");
-        iconElement.classList.add("message-icon");
-        iconElement.textContent = role === "user" ? "👤" : "🤖";
-        
-        // Add text content
-        const textElement = document.createElement("span");
-        textElement.classList.add("message-text");
-        textElement.textContent = message;
-        
-        // Assemble message
-        contentWrapper.appendChild(iconElement);
-        contentWrapper.appendChild(textElement);
-        messageElement.appendChild(contentWrapper);
-        
+        messageElement.innerHTML = `
+            <div class="message-content">
+                <span class="message-icon">${role === "user" ? "👤" : "🤖"}</span>
+                <span class="message-text">${message}</span>
+            </div>
+        `;
         chatlog.appendChild(messageElement);
         chatlog.scrollTop = chatlog.scrollHeight;
     }
+
+    // Show suggestions when input is empty
+    userInput.addEventListener('input', function() {
+        if (!userInput.value.trim()) {
+            showSuggestions();
+        } else {
+            suggestionsContainer.style.display = 'none';
+        }
+    });
 });

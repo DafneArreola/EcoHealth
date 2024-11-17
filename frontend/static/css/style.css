@@ -617,3 +617,28 @@ html {
     margin-top: -80px; /* Offset the main padding */
     padding-top: 80px; /* Add padding to preserve layout */
 }
+
+#chat-suggestions {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+}
+
+.suggestion-button {
+    background: white;
+    border: 2px solid #4CAF50;
+    border-radius: 20px;
+    padding: 8px 16px;
+    color: #4CAF50;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    font-size: 14px;
+}
+
+.suggestion-button:hover {
+    background: #4CAF50;
+    color: white;
+}

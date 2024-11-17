@@ -5,7 +5,7 @@ import json
 tuahus = TalkTuahUs()
 
 # Get a response
-response = tuahus.get_response("I'm trying my best but sometimes feel stuck...")
+response = tuahus.get_response("I'm finding it hard to stay motivated...")
 if response['status'] == 'success':
     print(response['response'])
 

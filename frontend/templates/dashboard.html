@@ -159,6 +159,36 @@
         </div>
     </section>
 
+    <section id="health-analysis-section" class="dashboard-section scroll-triggered">
+        <h2>Wellness Analysis</h2>
+        <div class="wellness-container">
+            <div class="webcam-container">
+                <video id="webcam" playsinline autoplay></video>
+                <canvas id="webcam-canvas" style="display: none;"></canvas>
+                <div class="capture-controls">
+                    <button id="start-camera" class="cta-button camera-button">
+                        📹 Start Camera
+                    </button>
+                    <button id="capture-image" class="cta-button capture-button" disabled>
+                        📸 Capture & Analyze
+                    </button>
+                </div>
+            </div>
+            <div class="analysis-results" id="analysis-results">
+                <div class="results-container">
+                    <h3>Wellness Insights</h3>
+                    <div id="loading-analysis" class="loading-spinner" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Analyzing wellness factors...</p>
+                    </div>
+                    <div id="analysis-content">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="recommendations-section" class="dashboard-section scroll-triggered">
         <h2>Smart Recommendations</h2>
         <div class="recommendations-container">

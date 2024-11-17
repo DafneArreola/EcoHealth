@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!rawData) {
         console.error('Twin state data element not found');
         return;
-    }
+    }   
 
     let twinState;
     try {
@@ -199,4 +199,147 @@ document.addEventListener('DOMContentLoaded', function() {
             chart.resize();
         });
     });
+});
+
+class WellnessAnalyzer {
+    constructor() {
+        this.video = document.getElementById('webcam');
+        this.canvas = document.getElementById('webcam-canvas');
+        this.startButton = document.getElementById('start-camera');
+        this.captureButton = document.getElementById('capture-image');
+        this.resultsContainer = document.getElementById('analysis-content');
+        this.loadingSpinner = document.getElementById('loading-analysis');
+        this.stream = null;
+
+        this.initializeEventListeners();
+    }
+
+    initializeEventListeners() {
+        this.startButton.addEventListener('click', () => this.toggleCamera());
+        this.captureButton.addEventListener('click', () => this.captureAndAnalyze());
+    }
+
+    async toggleCamera() {
+        if (this.stream) {
+            this.stopCamera();
+        } else {
+            await this.startCamera();
+        }
+    }
+
+    async startCamera() {
+        try {
+            this.stream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    facingMode: 'user'
+                }
+            });
+            this.video.srcObject = this.stream;
+            this.startButton.textContent = '⏹ Stop Camera';
+            this.captureButton.disabled = false;
+        } catch (error) {
+            console.error('Error accessing camera:', error);
+            alert('Unable to access camera. Please ensure you have granted camera permissions.');
+        }
+    }
+
+    stopCamera() {
+        if (this.stream) {
+            this.stream.getTracks().forEach(track => track.stop());
+            this.stream = null;
+            this.video.srcObject = null;
+            this.startButton.textContent = '📹 Start Camera';
+            this.captureButton.disabled = true;
+        }
+    }
+
+    async captureAndAnalyze() {
+        if (!this.stream) return;
+
+        // Setup canvas and capture image
+        this.canvas.width = this.video.videoWidth;
+        this.canvas.height = this.video.videoHeight;
+        const context = this.canvas.getContext('2d');
+        context.drawImage(this.video, 0, 0);
+
+        // Convert to base64
+        const imageData = this.canvas.toDataURL('image/jpeg');
+
+        // Show loading state
+        this.loadingSpinner.style.display = 'flex';
+        this.resultsContainer.innerHTML = '';
+
+        try {
+            // Send to backend for analysis
+            const response = await fetch('/api/analyze-wellness', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ image: imageData })
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                this.displayResults(data.analysis);
+            } else {
+                throw new Error(data.message || 'Analysis failed');
+            }
+        } catch (error) {
+            console.error('Analysis error:', error);
+            this.resultsContainer.innerHTML = `
+                <div class="error-message">
+                    Analysis failed. Please try again.
+                    <br>
+                    Error: ${error.message}
+                </div>
+            `;
+        } finally {
+            this.loadingSpinner.style.display = 'none';
+        }
+    }
+
+    displayResults(analysis) {
+        // Parse the analysis text and create structured HTML
+        const insights = this.parseAnalysis(analysis);
+        
+        const resultsHTML = insights.map(insight => `
+            <div class="wellness-insight">
+                <h4>${insight.title}</h4>
+                <p>${insight.observation}</p>
+                <div class="wellness-tip">
+                    <strong>Recommendation:</strong> ${insight.recommendation}
+                </div>
+            </div>
+        `).join('');
+
+        this.resultsContainer.innerHTML = resultsHTML;
+    }
+
+    parseAnalysis(analysisText) {
+        // Simple parsing of GPT's response - you might need to adjust based on your actual response format
+        const insights = [];
+        const sections = analysisText.split('\n\n');
+
+        sections.forEach(section => {
+            if (section.trim()) {
+                const lines = section.split('\n');
+                insights.push({
+                    title: lines[0].replace(':', '').trim(),
+                    observation: lines[1]?.trim() || '',
+                    recommendation: lines[2]?.replace('Recommendation:', '').trim() || ''
+                });
+            }
+        });
+
+        return insights;
+    }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    new WellnessAnalyzer();
 });

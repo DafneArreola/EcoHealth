@@ -5,6 +5,7 @@ from backend.poc import DigitalTwin
 from backend.database import find_user
 from openai import OpenAI
 import base64
+from backend.envImpact import EnvironmentalImpact
 
 # Initialize Flask app using create_app
 app = create_app()
@@ -49,18 +50,34 @@ def dashboard():
         return redirect(url_for('login'))
     
     username = session['user']
+    env_analyzer = EnvironmentalImpact()
     
     # For admin user, use mock data
     if username == 'admin':
+        twin_state = mock_twin_state
+        impact_data = {
+            "transportation": twin_state['environmental']['transportation'],
+            "diet": twin_state['environmental']['diet'],
+            "consumption": twin_state['environmental']['consumption']
+        }
+        environmental_impact = env_analyzer.get_multi_point_insight(impact_data)
         return render_template('dashboard.html', 
                              username=username,
-                             twin_state=mock_twin_state)
+                             twin_state=twin_state,
+                             environmental_impact=environmental_impact)
     
     # For other users, create new Digital Twin with default state
     twin = DigitalTwin(username)
+    impact_data = {
+        "transportation": twin.current_state['environmental']['transportation'],
+        "diet": twin.current_state['environmental']['diet'],
+        "consumption": twin.current_state['environmental']['consumption']
+    }
+    environmental_impact = env_analyzer.get_multi_point_insight(impact_data)
     return render_template('dashboard.html', 
                          username=username,
-                         twin_state=twin.current_state)
+                         twin_state=twin.current_state,
+                         environmental_impact=environmental_impact)
 
 # API endpoint for Digital Twin simulation
 @app.route('/api/simulate', methods=['POST'])

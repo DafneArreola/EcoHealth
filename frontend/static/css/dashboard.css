@@ -351,3 +351,22 @@ canvas {
 .chart-container {
     position: relative;
 }
+
+<style>
+.environmental-impact {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.environmental-impact h4 {
+    color: #4CAF50;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.impact-blurb {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #666;
+}

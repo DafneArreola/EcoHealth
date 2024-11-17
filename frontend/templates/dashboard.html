@@ -177,6 +177,13 @@
             <h3>🌍 Carbon Footprint</h3>
             <p class="main-score">{{ "%.1f"|format(twin_state.carbon_footprint) }} tons/year</p>
             <p class="comparison">Global Average: 4 tons/year</p>
+
+            <div class="environmental-impact">
+                <h4>Environmental Impact</h4>
+                <p class="impact-blurb">{{ environmental_impact }}</p>
+            </div>
+
+        
             {% if twin_state.combined_score %}
             <div class="combined-score">
                 <span>Combined Score:</span>

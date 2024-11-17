@@ -1,13 +1,15 @@
 from flask import render_template, session, redirect, url_for, request
 from backend import create_app
+from backend.routes import api
 
 # Initialize Flask app using create_app
 app = create_app()
+#app.register_blueprint(api, url_prefix="/api")
 
 # Home Page
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('test_page.html')
 
 # Login Page
 @app.route('/login', methods=['GET', 'POST'])
@@ -38,6 +40,11 @@ def dashboard():
 def logout():
     session.pop('user', None)
     return redirect(url_for('home'))
+
+
+@app.route('/test')
+def test_page():
+    return render_template('test_page.html')
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

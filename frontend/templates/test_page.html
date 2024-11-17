@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        .container {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Database Functionality Test</h1>
+
+    <!-- Container to display response -->
+    <div id="response" class="container">
+        <h3>Response:</h3>
+        <pre id="response-content"></pre>
+    </div>
+
+    <!-- Buttons for API Actions -->
+    <div class="container">
+        <h3>Actions:</h3>
+        <button onclick="registerUser()">Register User</button>
+        <button onclick="fetchUser()">Fetch User</button>
+        <button onclick="updateEnvironmentalData()">Update Environmental Data</button>
+        <button onclick="updateHealthData()">Update Health Data</button>
+    </div>
+
+    <script>
+        const apiUrl = "{{ url_for('api.register') }}"; // Base API URL
+
+        // Function to register a user
+        async function registerUser() {
+            const data = {
+                username: "johndoe",
+                age: 30,
+                location: "New York",
+                occupation: "Software Engineer",
+                goals: ["reduce waste", "eat healthy"]
+            };
+            await sendRequest("/api/register", "POST", data);
+        }
+
+        // Function to fetch a user
+        async function fetchUser() {
+    const username = "johndoe"; // Example username
+    try {
+        const response = await fetch(`/api/user/${username}`, { method: "GET" });
+        //console.log(response)
+        if (!response.ok) {
+            // Handle non-OK responses
+            throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        }
+        const responseData = await response.json();
+        document.getElementById("response-content").innerText = JSON.stringify(responseData, null, 2);
+    } catch (error) {
+        document.getElementById("response-content").innerText = `Error: ${error.message}`;
+    }
+}
+        // Function to update environmental data
+        async function updateEnvironmentalData() {
+            const username = "johndoe"; // Example username
+            const data = {
+                transportation: {
+                    primary_mode: "bike",
+                    miles_per_day: 10,
+                    public_transit: "never",
+                    bike_usage: "frequent",
+                    walking: "daily",
+                    flight_frequency: "rare"
+                }
+            };
+            await sendRequest(`/api/user/${username}/environmental_data`, "PUT", data);
+        }
+
+        // Function to update health data
+        async function updateHealthData() {
+            const username = "johndoe"; // Example username
+            const data = {
+                exercise: {
+                    activity_level: "high",
+                    frequency: "daily",
+                    activities: ["cycling", "running"],
+                    average_duration: 60
+                }
+            };
+            await sendRequest(`/api/user/${username}/health_data`, "PUT", data);
+        }
+
+        // Helper function to send requests
+        async function sendRequest(endpoint, method, body = null) {
+            const options = {
+                method: method,
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            };
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+
+            try {
+                const response = await fetch(endpoint, options);
+                const responseData = await response.json();
+                document.getElementById("response-content").innerText = JSON.stringify(responseData, null, 2);
+            } catch (error) {
+                document.getElementById("response-content").innerText = `Error: ${error}`;
+            }
+        }
+    </script>
+</body>
+</html>

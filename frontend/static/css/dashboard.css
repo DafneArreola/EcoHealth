@@ -512,3 +512,43 @@
     align-items: center;
     font-weight: bold;
 }
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+canvas {
+    width: 100% !important;
+    height: 300px !important;
+}
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+    padding: 1rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Ensure proper spacing between charts and cards */
+.chart-grid + .score-cards {
+    margin-top: 3rem;
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 250px;
+    }
+}

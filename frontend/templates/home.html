@@ -1,59 +1,136 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!-- Hero Section -->
 <header class="hero" id="home">
-    <div class="hero-content" style="padding-bottom: 10px;">
+    <div class="hero-content">
         <h1 class="hero-title">EcoHealth</h1>
-        <p class="hero-subtitle">Your eco-friendly guide powered by AI.</p>
-        <a href="{{ url_for('login_page') }}" class="cta-button" >Login</a>
-        
-    </div>
-
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-600">
-        <div className="bg-white bg-opacity-50 p-6 rounded">
-         
-          <div className="p-8 border-2 border-green-300 rounded bg-green-50">
-
-            <h2 className="text-3xl font-semibold text-white mb-5 bg-green-400 bg-opacity-90 p-5 rounded" id="about">
-              Our Mission:
-            </h2>
-            <p className="text-xl leading-relaxed">
-              To harmonize personal well-being with environmental consciousness through
-              <br />AI-driven insights and actionable recommendations.
-            </p>
-          </div>
+        <p class="hero-subtitle">Your AI-Powered Journey to Sustainable Wellness</p>
+        <div class="hero-buttons">
+            <a href="/login" class="cta-button">Login</a>
+            <a href="#about" class="cta-button secondary">Learn More</a>
         </div>
-      </div>
-      
+    </div>
 
     <div class="hero-animations">
         <div class="animated-circle"></div>
         <div class="animated-circle2"></div>
         <div class="animated-circle3"></div>
         <div class="animated-circle4"></div>
-        <!-- <div class="animated-line"></div> -->
     </div>
 </header>
 
-<main>
-    <section id="features" class="features-section">
-        <div class="feature">
-            <h2>Digital Twin Dashboard</h2>
-            <p>Track and achieve eco-friendly goals with AI insights.</p>
+<!-- About Section -->
+<section id="about" class="about-section">
+    <div class="about-container">
+        <div class="about-content">
+            <h2>About EcoHealth AI</h2>
+            <div class="mission-box">
+                <h3>Our Mission</h3>
+                <p>To harmonize personal well-being with environmental consciousness through AI-driven insights and actionable recommendations.</p>
+            </div>
+            
+            <div class="value-props">
+                <div class="value-prop">
+                    <span class="icon">🌱</span>
+                    <h3>Sustainable Living</h3>
+                    <p>Make eco-conscious choices while improving your health and wellness.</p>
+                </div>
+                <div class="value-prop">
+                    <span class="icon">🤖</span>
+                    <h3>AI-Powered Insights</h3>
+                    <p>Get personalized recommendations based on your lifestyle and goals.</p>
+                </div>
+                <div class="value-prop">
+                    <span class="icon">📊</span>
+                    <h3>Track Progress</h3>
+                    <p>Monitor your environmental impact and health improvements in real-time.</p>
+                </div>
+            </div>
         </div>
-        <div class="feature">
-            <h2>Smart Recommendations</h2>
-            <p>Personalize your lifestyle with our eco palette generator.</p>
-        </div>
-    </section>
+    </div>
+</section>
 
-    <section class="scroll-triggered" id="contact">
-        <h2>Join the Movement</h2>
-        <p>Empowering sustainability with the power of AI.<br><br>
-        Tele: 929-555-6933  <br> Email: ecohealth@gmail.com</p>
-    </section>
-</main>
-    <!-- JavaScript -->
-<script src="{{ url_for('static', filename='js/animations.js') }}" defer></script>
+<!-- Features Section -->
+<section id="features" class="features-section">
+    <h2>Key Features</h2>
+    <div class="features-grid">
+        <div class="feature">
+            <div class="feature-icon">👤</div>
+            <h3>Digital Twin Dashboard</h3>
+            <p>Interactive 3D visualization of your eco-health status</p>
+            <ul class="feature-list">
+                <li>Real-time health metrics</li>
+                <li>Environmental impact tracking</li>
+                <li>Progress visualization</li>
+            </ul>
+        </div>
+        
+        <div class="feature">
+            <div class="feature-icon">🎯</div>
+            <h3>Smart Recommendations</h3>
+            <p>AI-powered suggestions for a better lifestyle</p>
+            <ul class="feature-list">
+                <li>Personalized eco-tips</li>
+                <li>Health optimization ideas</li>
+                <li>Achievement tracking</li>
+            </ul>
+        </div>
+
+        <div class="feature">
+            <div class="feature-icon">🔄</div>
+            <h3>What-If Simulations</h3>
+            <p>Explore the impact of lifestyle changes</p>
+            <ul class="feature-list">
+                <li>Carbon footprint analysis</li>
+                <li>Health impact predictions</li>
+                <li>Goal setting assistance</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-it-works-section">
+    <h2>How It Works</h2>
+    <div class="steps-container">
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Create Your Profile</h3>
+            <p>Sign up and input your current lifestyle habits and goals</p>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Get Personalized Analysis</h3>
+            <p>Receive AI-powered insights about your eco-health status</p>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Track & Improve</h3>
+            <p>Monitor your progress and implement suggested changes</p>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="contact-section">
+    <div class="contact-container">
+        <div class="contact-content">
+            <h2>Join the Movement</h2>
+            <p>Transform your lifestyle while helping the planet</p>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span class="icon">📞</span>
+                    <p>929-555-6933</p>
+                </div>
+                <div class="contact-item">
+                    <span class="icon">📧</span>
+                    <p>ecohealth@gmail.com</p>
+                </div>
+            </div>
+            <a href="/register" class="cta-button">Get Started Today</a>
+        </div>
+    </div>
+</section>
 
 {% endblock %}

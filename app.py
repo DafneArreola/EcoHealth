@@ -3,11 +3,13 @@ from backend import create_app
 from backend.routes import api
 from backend.poc import DigitalTwin
 from backend.database import find_user
+from backend.talk_tuah import TalkTuahUs
 from openai import OpenAI
 import base64
 
 # Initialize Flask app using create_app
 app = create_app()
+chatbot = TalkTuahUs()
 #app.register_blueprint(api, url_prefix="/api")
 
 mock_twin_state = {
@@ -257,6 +259,25 @@ def complete_profile_page():
 @app.route('/test')
 def test_page():
     return render_template('test_page.html')
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    try:
+        # Parse the incoming JSON request
+        data = request.get_json()
+        user_message = data.get('message', '')
+
+        # Get response from the chatbot
+        response = chatbot.get_response(user_message)
+        return jsonify({
+            'status': response['status'],
+            'response': response['response'] if response['status'] == 'success' else response['message']
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'response': f"An error occurred: {str(e)}"
+        }), 500
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001, host="0.0.0.0")

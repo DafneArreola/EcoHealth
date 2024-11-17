@@ -6,23 +6,78 @@
 {% endblock %}
 
 {% block content %}
-<section class="register-section">
-    <h1>Register</h1>
-    <form onsubmit="handleRegister(event)">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
+<div class="register-wrapper">
+    <div class="register-container">
+        <div class="register-header">
+            <div class="logo-section">
+                <h1>Join EcoHealth</h1>
+            </div>
+            <p class="subtitle">Start your sustainable wellness journey today</p>
+        </div>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
+        <form class="register-form" id="registerForm" onsubmit="handleRegister(event)">
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" 
+                           id="username" 
+                           name="username" 
+                           placeholder="Choose a username"
+                           required
+                           pattern="[a-zA-Z0-9_]{3,20}"
+                           title="Username must be 3-20 characters and can only contain letters, numbers, and underscores">
+                </div>
+                <span class="input-hint">3-20 characters, letters, numbers, and underscores only</span>
+            </div>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="email" 
+                           id="email" 
+                           name="email" 
+                           placeholder="Enter your email"
+                           required>
+                </div>
+            </div>
 
-        <button type="submit">Register</button>
-    </form>
-</section>
-<script src="{{url_for('static', filename='js/register.js')}}"></script>
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="password" 
+                           id="password" 
+                           name="password" 
+                           placeholder="Create a password">
+                </div>
+            </div>
 
+            <button type="submit" class="register-button">
+                <span>Create Account</span>
+                <div class="button-loader"></div>
+            </button>
+        </form>
+
+        <div class="register-footer">
+            <p>Already have an account?</p>
+            <a href="/login" class="login-link">Login here</a>
+        </div>
+
+    </div>
+
+    <!-- Decorative Elements -->
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <!-- Success/Error Modal -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-icon"></span>
+            <h2 class="modal-title"></h2>
+            <p class="modal-message"></p>
+            <button class="modal-button"></button>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/register.js') }}"></script>
 {% endblock %}
-
-

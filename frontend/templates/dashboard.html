@@ -136,7 +136,23 @@
             </div>
         </section>
         <!-- Center Panel - 3D Model -->
-        <div id="container"></div>
+        <div class="score-card">
+        <div id="container">
+         </div> 
+        <div id="container2">
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <canvas id="radarChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="environmentalChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="healthChart"></canvas>
+                </div>
+            </div>
+        </div>
+        </div>
 
         <!-- Right Panel -->
         
@@ -258,7 +274,6 @@
     <!-- Simulation Section -->
     <!-- Replace the existing simulation section in dashboard.html -->
 
-</main>
 <!-- Load Chart.js first -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <!-- Then load your twin state data -->

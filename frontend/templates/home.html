@@ -1,12 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
-<header class="hero">
-    <div class="hero-content">
+<header class="hero" id="home">
+    <div class="hero-content" style="padding-bottom: 10px;">
         <h1 class="hero-title">EcoHealth</h1>
         <p class="hero-subtitle">Your eco-friendly guide powered by AI.</p>
-        <a href="/login" class="cta-button">Login</a>
+        <a href="/login" class="cta-button" >Login</a>
+        
     </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-600">
+        <div className="bg-white bg-opacity-50 p-6 rounded">
+         
+          <div className="p-8 border-2 border-green-300 rounded bg-green-50">
+
+            <h2 className="text-3xl font-semibold text-white mb-5 bg-green-400 bg-opacity-90 p-5 rounded" id="about">
+              Our Mission:
+            </h2>
+            <p className="text-xl leading-relaxed">
+              To harmonize personal well-being with environmental consciousness through
+              <br />AI-driven insights and actionable recommendations.
+            </p>
+          </div>
+        </div>
+      </div>
+      
+
     <div class="hero-animations">
         <div class="animated-circle"></div>
         <div class="animated-circle2"></div>
@@ -19,19 +38,22 @@
 <main>
     <section id="features" class="features-section">
         <div class="feature">
-            <h2>Eco Goals</h2>
+            <h2>Digital Twin Dashboard</h2>
             <p>Track and achieve eco-friendly goals with AI insights.</p>
         </div>
         <div class="feature">
-            <h2>Eco Palette</h2>
+            <h2>Smart Recommendations</h2>
             <p>Personalize your lifestyle with our eco palette generator.</p>
         </div>
     </section>
 
-    <section class="scroll-triggered">
+    <section class="scroll-triggered" id="contact">
         <h2>Join the Movement</h2>
-        <p>Empowering sustainability with the power of AI.</p>
+        <p>Empowering sustainability with the power of AI.<br><br>
+        Tele: 929-555-6933  <br> Email: ecohealth@gmail.com</p>
     </section>
 </main>
+    <!-- JavaScript -->
+<script src="{{ url_for('static', filename='js/animations.js') }}" defer></script>
 
 {% endblock %}

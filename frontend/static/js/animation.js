@@ -41,3 +41,4 @@ gsap.to(".animated-line", {
     yoyo: true,
     ease: "sine.inOut",
 });
+

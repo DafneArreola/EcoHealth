@@ -105,12 +105,16 @@ body, html {
 
 .scroll-triggered h2 {
     font-size: 2.5rem;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .scroll-triggered p {
     font-size: 1.2rem;
     color: #666;
+}
+
+.h2{
+    margin-top:20px; 
 }
 
 /* Animations */

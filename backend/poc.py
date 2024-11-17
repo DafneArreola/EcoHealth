@@ -183,28 +183,87 @@ class DigitalTwin:
         """
     
     def _calculate_simulated_impact(self, simulation: Dict[str, Any], changes: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Calculate simulated impact of changes (simplified for PoC)
-        In real implementation, this would use ChatGPT for more sophisticated analysis
-        """
-        # Simple simulation logic (example)
-        for change in changes.get('changes', []):
-            if change['type'] == 'transportation':
-                if 'increase public transit' in change['change'].lower():
-                    simulation['environmental']['transportation']['score'] += 10
-                    simulation['carbon_footprint'] -= 0.5
-            elif change['type'] == 'diet':
-                if 'plant-based' in change['change'].lower():
-                    simulation['environmental']['diet']['score'] += 8
-                    simulation['health']['wellness']['score'] += 5
-                    simulation['carbon_footprint'] -= 0.3
-        
-        # Recalculate overall scores
-        self._process_environmental(simulation['environmental'])
-        self._process_health(simulation['health'])
-        self._calculate_combined_score()
-        
-        return simulation
+        """Calculate simulated impact using ChatGPT analysis"""
+        try:
+            api_key = os.getenv("OPENAI_API_KEY")
+            if not api_key:
+                raise ValueError("OPENAI_API_KEY not found in environment variables")
+            
+            client = OpenAI(api_key=api_key)
+            
+            # Create prompt for analyzing the change
+            change_type = changes['changes'][0]['type']
+            change_desc = changes['changes'][0]['change']
+            
+            prompt = f"""Analyze this proposed lifestyle change and determine its impacts:
+
+    Change Type: {change_type}
+    Proposed Change: {change_desc}
+
+    Current Scores:
+    - Environmental {change_type} score: {simulation['environmental'][change_type]['score']}/100
+    - Health score: {simulation['health']['exercise']['score']}/100
+    - Carbon footprint: {simulation['carbon_footprint']} tons/year
+
+    Provide your analysis in this exact JSON format:
+    {{
+        "environmental_score_change": (number between -30 and +30),
+        "health_score_change": (number between -30 and +30),
+        "carbon_reduction": (number between 0 and 3),
+        "key_factors": ["factor 1", "factor 2"],
+        "reasoning": "Brief explanation of impacts"
+    }}
+
+    Base your analysis on realistic lifestyle impacts. Consider cross-impacts (e.g., biking improves both environment and health)."""
+
+            # Get ChatGPT's analysis
+            response = client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": "You are an expert in environmental and health impact analysis. Provide realistic, evidence-based impact assessments."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7
+            )
+            
+            # Parse the response
+            try:
+                analysis = json.loads(response.choices[0].message.content)
+                
+                # Apply the changes based on ChatGPT's analysis
+                simulation['environmental'][change_type]['score'] += analysis['environmental_score_change']
+                simulation['health']['exercise']['score'] += analysis['health_score_change']
+                simulation['carbon_footprint'] -= analysis['carbon_reduction']
+                
+                # Add the key factors
+                if 'key_factors' in analysis:
+                    simulation['environmental'][change_type]['key_factors'].extend(analysis['key_factors'])
+                
+                # Print reasoning instead of logging (removed app.logger dependency)
+                print(f"Simulation reasoning: {analysis.get('reasoning', 'No reasoning provided')}")
+                
+            except json.JSONDecodeError as e:
+                print(f"Failed to parse ChatGPT response: {str(e)}")
+                raise ValueError("Invalid response format from ChatGPT")
+            
+            # Ensure scores stay within bounds
+            for category in ['environmental', 'health']:
+                for subcategory in simulation[category]:
+                    if isinstance(simulation[category][subcategory], dict) and 'score' in simulation[category][subcategory]:
+                        simulation[category][subcategory]['score'] = min(100, max(0, 
+                            simulation[category][subcategory]['score']
+                        ))
+            
+            # Recalculate overall scores
+            self._process_environmental(simulation['environmental'])
+            self._process_health(simulation['health'])
+            self._calculate_combined_score()
+            
+            return simulation
+                
+        except Exception as e:
+            print(f"Error in ChatGPT simulation: {str(e)}")
+            raise
     
     def _estimate_timeline(self, changes: Dict[str, Any]) -> str:
         """Estimate timeline for changes to take effect"""

@@ -44,6 +44,39 @@ def logout():
     session.pop('user', None)
     return redirect(url_for('home'))
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        # Capture form data
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+
+        # Check if user already exists
+        mongo = app.extensions['pymongo'].db
+        existing_user = mongo.users.find_one({"username": username})
+        if existing_user:
+            return render_template('register.html', error="Username already exists")
+
+        # Add user to the database
+        mongo.users.insert_one({
+            "username": username,
+            "password": password,  # NOTE: Use password hashing in production
+            "email": email
+        })
+        return redirect(url_for('login'))
+
+    return render_template('register.html')
+
+# Forgot Password Page
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form['email']
+        # Dummy response for demonstration
+        return render_template('forgot_password.html', message="Check your email for reset instructions.")
+    return render_template('forgot_password.html')
+
 
 @app.route('/test')
 def test_page():

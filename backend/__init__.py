@@ -13,6 +13,11 @@ def create_app():
     # Configure MongoDB
     app.config["MONGO_URI"] = MONGO_URI
     mongo.init_app(app)
+
+    # # Ensure the users collection exists
+    # db = mongo.db
+    # if "users" not in db.list_collection_names():
+    #     db.create_collection("users")
     
     # Register routes
     from backend.routes import api

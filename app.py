@@ -166,6 +166,7 @@ def analyze_wellness():
         - Stress indicators
         - Hydration levels
         - General energy levels
+        - Mention what is visible in the image and how it relates to health.
         
         Provide practical, health-focused recommendations. DO NOT comment on appearance or cosmetic factors.
         Focus on lifestyle and wellness improvements. Be concise and informative. No more than a few sentences."""

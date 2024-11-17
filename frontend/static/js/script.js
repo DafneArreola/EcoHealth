@@ -9,6 +9,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // Show chatbot modal when the button is clicked
     chatbotButton.addEventListener("click", function () {
         chatbotModal.style.display = "block";
+        // Add welcome message when chat is opened
+        if (chatlog.children.length === 0) {
+            addMessageToChatlog("bot", "Hi! I'm here to help you on your eco-health journey. What's on your mind?");
+        }
     });
 
     // Hide chatbot modal when the close button is clicked
@@ -16,38 +20,79 @@ document.addEventListener("DOMContentLoaded", function () {
         chatbotModal.style.display = "none";
     });
 
-    // Handle sending messages and displaying responses
-    sendMessageButton.addEventListener("click", async function () {
-        const message = userInput.value.trim(); // Get user input
-        if (message) {
-            addMessageToChatlog("user", message); // Display user message
-            userInput.value = ""; // Clear input field
-
-            try {
-                // Send user message to server and get chatbot response
-                const response = await fetch("http://127.0.0.1:5000/chat", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ message: message }),
-                });
-
-                const data = await response.json();
-                addMessageToChatlog("bot", data.response); // Display chatbot response
-            } catch (error) {
-                addMessageToChatlog("bot", "Sorry, something went wrong. Please try again.");
-                console.error("Error:", error);
-            }
+    // Handle sending messages when Enter key is pressed
+    userInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            sendMessage();
         }
     });
 
-    // Function to add messages to the chatlog
+    // Handle sending messages when Send button is clicked
+    sendMessageButton.addEventListener("click", sendMessage);
+
+    async function sendMessage() {
+        const message = userInput.value.trim();
+        if (message) {
+            addMessageToChatlog("user", message);
+            userInput.value = "";
+
+            try {
+                // Get CSRF token from meta tag
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+                
+                // Send message to server
+                const response = await fetch("/chat", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfToken || "",
+                    },
+                    body: JSON.stringify({ message: message }),
+                    credentials: 'same-origin'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    addMessageToChatlog("bot", data.response);
+                } else {
+                    throw new Error(data.response || "Failed to get response");
+                }
+            } catch (error) {
+                console.error("Chat error:", error);
+                addMessageToChatlog("bot", "Sorry, I'm having trouble responding right now. Please try again in a moment.");
+            }
+        }
+    }
+
     function addMessageToChatlog(role, message) {
         const messageElement = document.createElement("div");
-        messageElement.classList.add("message", role); // Add appropriate class for styling
-        messageElement.textContent = message; // Set message text
-        chatlog.appendChild(messageElement); // Append message to chatlog
-        chatlog.scrollTop = chatlog.scrollHeight; // Auto-scroll to bottom
+        messageElement.classList.add("message", role);
+        
+        // Create message content wrapper
+        const contentWrapper = document.createElement("div");
+        contentWrapper.classList.add("message-content");
+        
+        // Add icon/avatar element
+        const iconElement = document.createElement("span");
+        iconElement.classList.add("message-icon");
+        iconElement.textContent = role === "user" ? "👤" : "🤖";
+        
+        // Add text content
+        const textElement = document.createElement("span");
+        textElement.classList.add("message-text");
+        textElement.textContent = message;
+        
+        // Assemble message
+        contentWrapper.appendChild(iconElement);
+        contentWrapper.appendChild(textElement);
+        messageElement.appendChild(contentWrapper);
+        
+        chatlog.appendChild(messageElement);
+        chatlog.scrollTop = chatlog.scrollHeight;
     }
 });

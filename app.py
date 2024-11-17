@@ -53,16 +53,16 @@ def dashboard():
     username = session['user']
     
     # For admin user, use mock data
-    if username == 'admin':
-        return render_template('dashboard.html', 
+    #if username == 'admin':
+    return render_template('dashboard.html', 
                              username=username,
                              twin_state=mock_twin_state)
     
     # For other users, create new Digital Twin with default state
-    twin = DigitalTwin(username)
+    """twin = DigitalTwin(username)
     return render_template('dashboard.html', 
                          username=username,
-                         twin_state=twin.current_state)
+                         twin_state=twin.current_state)"""
 
 # API endpoint for Digital Twin simulation
 @app.route('/api/simulate', methods=['POST'])

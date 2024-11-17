@@ -12,21 +12,14 @@ def home():
     return render_template('home.html')
 
 # Login Page
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        # Replace this with your user authentication logic
-        username = request.form['username']
-        password = request.form['password']
-        
-        # Dummy credentials for demonstration
-        if username == 'admin' and password == 'password':
-            session['user'] = username
-            return redirect(url_for('dashboard'))
-        else:
-            return render_template('login.html', error="Invalid username or password")
-    
+@app.route('/login', methods=['GET'])
+def login_page():
     return render_template('login.html')
+
+# Handle redirection after successful login
+@app.route('/redirect-after-login', methods=['GET'])
+def redirect_after_login():
+    return redirect(url_for('dashboard'))
 
 # Dashboard Page
 @app.route('/dashboard')
@@ -44,29 +37,16 @@ def logout():
     session.pop('user', None)
     return redirect(url_for('home'))
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        # Capture form data
-        username = request.form['username']
-        password = request.form['password']
-        email = request.form['email']
 
-        # Check if user already exists
-        mongo = app.extensions['pymongo'].db
-        existing_user = mongo.users.find_one({"username": username})
-        if existing_user:
-            return render_template('register.html', error="Username already exists")
-
-        # Add user to the database
-        mongo.users.insert_one({
-            "username": username,
-            "password": password,  # NOTE: Use password hashing in production
-            "email": email
-        })
-        return redirect(url_for('login'))
-
+# Registration Page
+@app.route('/register', methods=['GET'])
+def register_page():
     return render_template('register.html')
+
+# Handle redirection after successful registration
+@app.route('/redirect-after-register', methods=['GET'])
+def redirect_after_register():
+    return redirect(url_for('login_page'))
 
 # Forgot Password Page
 @app.route('/forgot-password', methods=['GET', 'POST'])

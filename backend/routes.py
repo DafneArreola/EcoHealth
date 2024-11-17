@@ -1,22 +1,44 @@
+from bson.json_util import dumps
+from bson.objectid import ObjectId
+from flask import Response
 from flask import Blueprint, request, jsonify, session
 from backend.database import insert_user, find_user, update_user_field, get_user_with_nested_data
 
 api = Blueprint("api", __name__)
 
-@api.route("/register", methods=["POST"])
+@api.route('/register', methods=['POST'])
 def register():
-    data = request.json
-    insert_user(data)
-    return jsonify({"message": "User registered successfully!"})
+    data = request.json  # Ensure JSON data is sent
+    username = data.get('username')
+    password = data.get('password')
+    email = data.get('email')
 
-@api.route("/login", methods=["POST"])
+    # Check if the user already exists
+    if find_user(username):
+        return jsonify({"success": False, "error": "Username already exists!"}), 400
+
+    # Insert the new user
+    insert_user({
+        "username": username,
+        "password": password,  # Add password hashing for production
+        "email": email
+    })
+    return jsonify({"success": True, "message": "Registration successful! Please login."}), 200
+
+@api.route('/login', methods=['POST'])
 def login():
-    data = request.json
-    user = find_user(data.get("username"))
-    if user:
-        session["user"] = user["username"]
-        return jsonify({"message": "Login successful!"})
-    return jsonify({"error": "User not found"}), 404
+    data = request.json  # Ensure JSON data is sent
+    username = data.get('username')
+    password = data.get('password')
+
+    # Check if the user exists
+    user = find_user(username)
+    if not user or user['password'] != password:  # Use hashed password verification in production
+        return jsonify({"success": False, "error": "Invalid username or password!"}), 401
+
+    # Set user in session
+    session['user'] = user['username']
+    return jsonify({"success": True, "message": "Login successful!"}), 200
 
 @api.route("/user/<username>", methods=["GET"])
 def get_user(username):

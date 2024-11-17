@@ -1,142 +1,80 @@
 {% extends "base.html" %}
+
 {% block content %}
 
-<!-- Animated Background Elements -->
-<div class="animated-circle"></div>
-<div class="animated-circle2"></div>
-<div class="animated-circle3"></div>
-<div class="animated-circle4"></div>
-
-<div class="dashboard-container">
-    <!-- Welcome Header -->
-    <div class="welcome-header">
+<!-- Hero Section -->
+<header class="hero dashboard-hero">
+    <div class="hero-content">
         <h1 class="hero-title">Welcome, {{ username }}</h1>
-        <p class="hero-subtitle">Your Digital Twin Dashboard</p>
+        <p class="hero-subtitle">Explore your Digital Twin Dashboard</p>
     </div>
+    <div class="hero-animations">
+        <div class="animated-circle"></div>
+        <div class="animated-circle2"></div>
+        <div class="animated-circle3"></div>
+        <div class="animated-circle4"></div>
+    </div>
+</header>
 
-    <!-- Navigation Tabs -->
-    <div class="dashboard-tabs">
-        <button class="tab-button active" data-tab="overview">Overview</button>
-        <button class="tab-button" data-tab="simulation">Simulation</button>
-        <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
-    </div>
+<main>
+    <!-- Dashboard Navigation -->
+    <section id="dashboard-navigation" class="features-section dashboard-navigation">
+        <a href="#overview-section" class="feature dashboard-link">🌟 Overview</a>
+        <a href="#simulation-section" class="feature dashboard-link">🛠️ Simulations</a>
+        <a href="{{ url_for('logout') }}" class="feature logout-button">🚪 Logout</a>
+    </section>
 
     <!-- Overview Section -->
-    <div class="dashboard-section active" id="overview-section">
+    <section id="overview-section" class="dashboard-section scroll-triggered">
+        <h2>Overview</h2>
         <div class="score-cards">
             <!-- Environmental Score Card -->
             <div class="score-card feature">
-                <div class="score-header">
-                    <h3>Environmental Score</h3>
-                    <span class="score-icon">🌿</span>
-                </div>
-                <div class="score-content">
-                    <div class="main-score">{{ twin_state.environmental.overall_score }}<span class="score-max">/100</span></div>
-                    <div class="sub-scores">
-                        <div class="sub-score">
-                            <span>Transportation</span>
-                            <span>{{ twin_state.environmental.transportation.score }}/100</span>
-                        </div>
-                        <div class="sub-score">
-                            <span>Diet</span>
-                            <span>{{ twin_state.environmental.diet.score }}/100</span>
-                        </div>
-                        <div class="sub-score">
-                            <span>Consumption</span>
-                            <span>{{ twin_state.environmental.consumption.score }}/100</span>
-                        </div>
-                    </div>
-                </div>
+                <h3>🌿 Environmental Score</h3>
+                <p class="main-score">{{ twin_state.environmental.overall_score }}/100</p>
+                <ul class="sub-scores">
+                    <li>Transportation: {{ twin_state.environmental.transportation.score }}/100</li>
+                    <li>Diet: {{ twin_state.environmental.diet.score }}/100</li>
+                    <li>Consumption: {{ twin_state.environmental.consumption.score }}/100</li>
+                </ul>
             </div>
-
             <!-- Health Score Card -->
             <div class="score-card feature">
-                <div class="score-header">
-                    <h3>Health Score</h3>
-                    <span class="score-icon">❤️</span>
-                </div>
-                <div class="score-content">
-                    <div class="main-score">{{ twin_state.health.overall_score }}<span class="score-max">/100</span></div>
-                    <div class="sub-scores">
-                        <div class="sub-score">
-                            <span>Exercise</span>
-                            <span>{{ twin_state.health.exercise.score }}/100</span>
-                        </div>
-                        <div class="sub-score">
-                            <span>Sleep</span>
-                            <span>{{ twin_state.health.sleep.score }}/100</span>
-                        </div>
-                        <div class="sub-score">
-                            <span>Wellness</span>
-                            <span>{{ twin_state.health.wellness.score }}/100</span>
-                        </div>
-                    </div>
-                </div>
+                <h3>❤️ Health Score</h3>
+                <p class="main-score">{{ twin_state.health.overall_score }}/100</p>
+                <ul class="sub-scores">
+                    <li>Exercise: {{ twin_state.health.exercise.score }}/100</li>
+                    <li>Sleep: {{ twin_state.health.sleep.score }}/100</li>
+                    <li>Wellness: {{ twin_state.health.wellness.score }}/100</li>
+                </ul>
             </div>
-
             <!-- Carbon Footprint Card -->
             <div class="score-card feature">
-                <div class="score-header">
-                    <h3>Carbon Footprint</h3>
-                    <span class="score-icon">🌍</span>
-                </div>
-                <div class="score-content">
-                    <div class="main-score">{{ twin_state.carbon_footprint }}<span class="score-unit">tons/year</span></div>
-                    <div class="comparison">
-                        <span>Global Average: 4 tons/year</span>
-                    </div>
-                </div>
+                <h3>🌍 Carbon Footprint</h3>
+                <p class="main-score">{{ twin_state.carbon_footprint }} tons/year</p>
+                <p class="comparison">Global Average: 4 tons/year</p>
             </div>
         </div>
-
-        <!-- Recommendations -->
-        <div class="recommendations-section scroll-triggered">
-            <h2>Smart Recommendations</h2>
-            <div class="recommendation-cards features-section">
-                <div class="recommendation-card feature">
-                    <div class="recommendation-icon">↗️</div>
-                    <div class="recommendation-content">
-                        <h4>Increase Public Transit Usage</h4>
-                        <p>Could reduce carbon footprint by 0.8 tons/year</p>
-                    </div>
-                </div>
-                <div class="recommendation-card feature">
-                    <div class="recommendation-icon">↗️</div>
-                    <div class="recommendation-content">
-                        <h4>Add Plant-Based Meals</h4>
-                        <p>Environmental score could improve by 5 points</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </section>
 
     <!-- Simulation Section -->
-    <div class="dashboard-section" id="simulation-section">
+    <section id="simulation-section" class="dashboard-section scroll-triggered">
+        <h2>What-If Simulations</h2>
         <div class="simulation-container feature">
-            <h2>What-If Simulator</h2>
-            <div class="simulation-form">
-                <div class="form-group">
-                    <label for="change-type">Change Type</label>
-                    <select id="change-type" class="simulation-input">
-                        <option value="transportation">Transportation</option>
-                        <option value="diet">Diet</option>
-                        <option value="exercise">Exercise</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="change-description">Proposed Change</label>
-                    <input type="text" id="change-description" class="simulation-input" 
-                           placeholder="e.g., Switch to public transit 3 days/week">
-                </div>
-                <button class="cta-button simulation-button">Simulate Impact</button>
-            </div>
-            <div class="simulation-results" id="simulation-results">
-                <!-- Results will be populated via JavaScript -->
-            </div>
+            <label for="change-type">Change Type:</label>
+            <select id="change-type" class="simulation-input">
+                <option value="transportation">Transportation</option>
+                <option value="diet">Diet</option>
+                <option value="exercise">Exercise</option>
+            </select>
+            <label for="change-description">Proposed Change:</label>
+            <input type="text" id="change-description" placeholder="e.g., Use public transit 3 days/week">
+            <button class="cta-button simulation-button">Simulate Impact</button>
         </div>
-    </div>
-</div>
+        <div id="simulation-results" class="scroll-triggered">
+            <!-- Results dynamically populated here -->
+        </div>
+    </section>
+</main>
 
-<script src="{{ url_for('static', filename='js/digital-twin.js') }}"></script>
 {% endblock %}

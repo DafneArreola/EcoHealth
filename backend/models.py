@@ -14,9 +14,11 @@ def create_collections():
     db.create_collection("user_profiles", validator={
         "$jsonSchema": {
             "bsonType": "object",
-            "required": ["username", "age", "location", "occupation", "goals"],
+            "required": ["username", "email", "password"],
             "properties": {
                 "username": {"bsonType": "string"},
+                "email": {"bsonType": "string"},
+                "password": {"bsonType": "string"},
                 "age": {"bsonType": "int"},
                 "location": {"bsonType": "string"},
                 "occupation": {"bsonType": "string"},

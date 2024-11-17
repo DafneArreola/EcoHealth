@@ -82,7 +82,7 @@ def test_jessica_scenario():
             },
             {
                 "type": "diet",
-                "change": "increase plant-based meals to 4 days/week",
+                "change": "cut out red40 and other artificial dyes",
                 "timeline": "2 weeks"
             }
         ]

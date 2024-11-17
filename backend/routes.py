@@ -2,7 +2,7 @@ from bson.json_util import dumps
 from bson.objectid import ObjectId
 from flask import Response
 from flask import Blueprint, request, jsonify, session
-from backend.database import insert_user, find_user, update_user_field, get_user_with_nested_data
+from backend.database import insert_user, find_user, update_user_field, get_user_with_nested_data, update_user
 
 api = Blueprint("api", __name__)
 
@@ -23,6 +23,9 @@ def register():
         "password": password,  # Add password hashing for production
         "email": email
     })
+
+
+    session['user'] = username
     return jsonify({"success": True, "message": "Registration successful! Please login."}), 200
 
 @api.route('/login', methods=['POST'])
@@ -78,3 +81,58 @@ def update_wellness_data(username):
     if not success:
         return jsonify({"error": "User not found"}), 404
     return jsonify({"message": "Wellness data updated successfully"})
+
+
+@api.route('/complete_profile', methods=['POST'])
+def complete_profile():
+    data = request.json
+    username = session.get('user')  # Ensure username is fetched from the session
+
+    if not username:
+        return jsonify({"success": False, "error": "User not logged in"}), 401
+
+    # Prepare updates
+    updates = {
+        "age": int(data.get("age", 0)),
+        "location": data.get("location"),
+        "occupation": data.get("occupation"),
+        "goals": data.get("goals", []),  # Already sent as a list
+        "environmental_data": {
+            "transportation": {
+                "primary_mode": data.get("primary_mode"),
+                "miles_per_day": int(data.get("miles_per_day", 0)),
+                "public_transit": data.get("public_transit"),
+                "bike_usage": data.get("bike_usage"),
+                "walking": data.get("walking"),
+                "flight_frequency": data.get("flight_frequency")
+            },
+            "diet": {
+                "type": data.get("diet_type"),
+                "local_food_percent": int(data.get("local_food_percent", 0)),
+                "waste_frequency": data.get("waste_frequency"),
+                "meal_planning": data.get("meal_planning") == "on",
+                "composting": data.get("composting") == "on"
+            }
+        },
+        "health_data": {
+            "exercise": {
+                "activity_level": data.get("activity_level"),
+                "frequency": data.get("frequency"),
+                "activities": data.get("activities", []),  # Already sent as a list
+            },
+            "sleep": {
+                "average_hours": float(data.get("average_hours", 0)),
+                "quality": data.get("quality"),
+                "schedule": data.get("schedule")
+            }
+        }
+    }
+
+    # Update the user's profile
+    update_user(username, updates)
+
+    return jsonify({"success": True, "message": "Profile completed successfully!"})
+
+
+
+

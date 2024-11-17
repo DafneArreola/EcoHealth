@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="hero">
+    <div class="hero-content">
+        <h1 class="hero-title">Complete Your Profile</h1>
+        <p class="hero-subtitle">Provide details to personalize your EcoHealth experience.</p>
+    </div>
+</header>
+
+<main>
+    <section class="profile-section">
+        <h2>Profile Information</h2>
+        <form id="profileForm" class="profile-form" onsubmit="submitProfile(event)">
+            <!-- Basic Info -->
+            <fieldset>
+                <legend>Basic Info</legend>
+                <label for="age">Age:</label>
+                <input type="number" id="age" name="age" required><br><br>
+
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" required><br><br>
+
+                <label for="occupation">Occupation:</label>
+                <input type="text" id="occupation" name="occupation" required><br><br>
+
+                <label for="goals">Goals (comma-separated):</label>
+                <input type="text" id="goals" name="goals" required><br><br>
+            </fieldset>
+
+            <!-- Environmental Data -->
+            <fieldset>
+                <legend>Environmental Data</legend>
+                <fieldset>
+                    <legend>Transportation</legend>
+                    <label for="primary_mode">Primary Mode:</label>
+                    <input type="text" id="primary_mode" name="primary_mode" required><br><br>
+
+                    <label for="miles_per_day">Miles Per Day:</label>
+                    <input type="number" id="miles_per_day" name="miles_per_day" required><br><br>
+
+                    <label for="public_transit">Public Transit:</label>
+                    <input type="text" id="public_transit" name="public_transit" required><br><br>
+
+                    <label for="bike_usage">Bike Usage:</label>
+                    <input type="text" id="bike_usage" name="bike_usage" required><br><br>
+
+                    <label for="walking">Walking:</label>
+                    <input type="text" id="walking" name="walking" required><br><br>
+
+                    <label for="flight_frequency">Flight Frequency:</label>
+                    <input type="text" id="flight_frequency" name="flight_frequency" required><br><br>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Diet</legend>
+                    <label for="diet_type">Type:</label>
+                    <input type="text" id="diet_type" name="diet_type" required><br><br>
+
+                    <label for="local_food_percent">Local Food Percent:</label>
+                    <input type="number" id="local_food_percent" name="local_food_percent" required><br><br>
+
+                    <label for="waste_frequency">Waste Frequency:</label>
+                    <input type="text" id="waste_frequency" name="waste_frequency" required><br><br>
+
+                    <label for="meal_planning">Meal Planning:</label>
+                    <input type="checkbox" id="meal_planning" name="meal_planning" required><br><br>
+
+                    <label for="composting">Composting:</label>
+                    <input type="checkbox" id="composting" name="composting" required><br><br>
+                </fieldset>
+            </fieldset>
+
+            <!-- Health Data -->
+            <fieldset>
+                <legend>Health Data</legend>
+                <fieldset>
+                    <legend>Exercise</legend>
+                    <label for="activity_level">Activity Level:</label>
+                    <input type="text" id="activity_level" name="activity_level" required><br><br>
+
+                    <label for="frequency">Frequency:</label>
+                    <input type="text" id="frequency" name="frequency" required><br><br>
+
+                    <label for="activities">Activities (comma-separated):</label>
+                    <input type="text" id="activities" name="activities" required><br><br>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Sleep</legend>
+                    <label for="average_hours">Average Hours:</label>
+                    <input type="number" step="0.1" id="average_hours" name="average_hours" required><br><br>
+
+                    <label for="quality">Quality:</label>
+                    <input type="text" id="quality" name="quality" required><br><br>
+
+                    <label for="schedule">Schedule:</label>
+                    <input type="text" id="schedule" name="schedule" required><br><br>
+                </fieldset>
+            </fieldset>
+
+            <button type="submit" class="cta-button">Submit</button>
+        </form>
+    </section>
+</main>
+
+<script>
+    async function submitProfile(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Collect form data
+        const formData = new FormData(document.getElementById("profileForm"));
+        const data = Object.fromEntries(formData.entries());
+
+        // Ensure fields that are expected to be lists are converted
+        data.goals = data.goals ? data.goals.split(",").map(item => item.trim()) : [];
+        data.activities = data.activities ? data.activities.split(",").map(item => item.trim()) : [];
+
+        // Convert checkboxes to boolean values
+        data.meal_planning = document.getElementById("meal_planning").checked;
+        data.composting = document.getElementById("composting").checked;
+
+        // Send the data to the backend
+        try {
+            const response = await fetch('/api/complete_profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data) // Convert the data object to JSON
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert("Profile completed successfully!");
+                window.location.href = "/"; // Redirect to the home page
+            } else {
+                alert("Error: " + result.error);
+            }
+        } catch (error) {
+            console.error("Error submitting profile:", error);
+            alert("An error occurred while submitting your profile. Please try again.");
+        }
+    }
+</script>
+
+{% endblock %}

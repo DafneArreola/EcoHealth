@@ -21,6 +21,11 @@ def update_user_field(username, field, value):
     )
     return result.matched_count > 0  # Returns True if a document was updated
 
+
+def update_user(username, updates):
+    """Update user profile fields."""
+    mongo.db.user_profiles.update_one({"username": username}, {"$set": updates})
+
 def get_user_with_nested_data(username):
     """Find a user by username."""
     user = mongo.db.user_profiles.find_one({"username": username})

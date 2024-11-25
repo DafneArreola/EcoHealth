@@ -7,281 +7,64 @@
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
 <div class="dashboard-wrapper">
     <header class="hero">
-    <div class="hero-content">
-        <h1 class="hero-title">Welcome, {{ username }}</h1>
-        <p class="hero-subtitle">Explore your Digital Twin Dashboard</p>
-    </div>
-    <div class="hero-animations">
-        <div class="animated-circle"></div>
-        <div class="animated-circle2"></div>
-        <div class="animated-circle3"></div>
-        <div class="animated-circle4"></div>
-    </div>
-</header>
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome, {{ username }}</h1>
+            <p class="hero-subtitle">Explore your personalized dashboard</p>
+        </div>
+    </header>
 
-    <!-- Dashboard Navigation -->
     <nav class="dashboard-navigation">
         <a href="#overview-section" class="dashboard-link">🌟 Overview</a>
         <a href="#simulation-section" class="dashboard-link">🛠️ Simulations</a>
         <a href="{{ url_for('logout') }}" class="dashboard-link">🚪 Logout</a>
+        <a href="{{ url_for('complete_profile_page') }}" class="dashboard-link">📝 Update Info</a>
     </nav>
 
-    <!-- Main Dashboard Content -->
     <div class="dashboard-content">
-        <!-- Left Panel -->
+        <!-- Environmental Section -->
         <section id="overview-section">
             <div class="score-card">
-                <h3>🌿 Environmental Score</h3>
-                <p class="main-score">{{ "%.1f"|format(twin_state.environmental.overall_score) }}/100</p>
-                <div class="sub-scores">
-                    <div class="sub-score">
-                        <span>Transportation:</span>
-                        <span>{{ "%.1f"|format(twin_state.environmental.transportation.score) }}/100</span>
-                    </div>
-                    {% if twin_state.environmental.transportation.key_factors %}
-                    <div class="key-factors">
-                        <span class="factor-label">Key Factors:</span>
-                        <ul>
-                            {% for factor in twin_state.environmental.transportation.key_factors %}
-                            <li>{{ factor }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    {% endif %}
-
-                    <div class="sub-score">
-                        <span>Diet:</span>
-                        <span>{{ "%.1f"|format(twin_state.environmental.diet.score) }}/100</span>
-                    </div>
-                    {% if twin_state.environmental.diet.key_factors %}
-                    <div class="key-factors">
-                        <span class="factor-label">Key Factors:</span>
-                        <ul>
-                            {% for factor in twin_state.environmental.diet.key_factors %}
-                            <li>{{ factor }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    {% endif %}
-
-                    <div class="sub-score">
-                        <span>Consumption:</span>
-                        <span>{{ "%.1f"|format(twin_state.environmental.consumption.score) }}/100</span>
-                    </div>
-                    {% if twin_state.environmental.consumption.key_factors %}
-                    <div class="key-factors">
-                        <span class="factor-label">Key Factors:</span>
-                        <ul>
-                            {% for factor in twin_state.environmental.consumption.key_factors %}
-                            <li>{{ factor }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="score-card">
-                <h3>❤️ Health Score</h3>
-                <p class="main-score">{{ "%.1f"|format(twin_state.health.overall_score) }}/100</p>
-                <div class="sub-scores">
-                    <div class="sub-score">
-                        <span>Exercise:</span>
-                        <span>{{ "%.1f"|format(twin_state.health.exercise.score) }}/100</span>
-                    </div>
-                    {% if twin_state.health.exercise.key_factors %}
-                    <div class="key-factors">
-                        <span class="factor-label">Key Factors:</span>
-                        <ul>
-                            {% for factor in twin_state.health.exercise.key_factors %}
-                            <li>{{ factor }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    {% endif %}
-
-                    <div class="sub-score">
-                        <span>Sleep:</span>
-                        <span>{{ "%.1f"|format(twin_state.health.sleep.score) }}/100</span>
-                    </div>
-                    {% if twin_state.health.sleep.key_factors %}
-                    <div class="key-factors">
-                        <span class="factor-label">Key Factors:</span>
-                        <ul>
-                            {% for factor in twin_state.health.sleep.key_factors %}
-                            <li>{{ factor }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    {% endif %}
-
-                    <div class="sub-score">
-                        <span>Wellness:</span>
-                        <span>{{ "%.1f"|format(twin_state.health.wellness.score) }}/100</span>
-                    </div>
-                    {% if twin_state.health.wellness.key_factors %}
-                    <div class="key-factors">
-                        <span class="factor-label">Key Factors:</span>
-                        <ul>
-                            {% for factor in twin_state.health.wellness.key_factors %}
-                            <li>{{ factor }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    {% endif %}
-                </div>
+                <h3>🌿 Environmental Data</h3>
+                <p><strong>Transportation:</strong> {{ user.environmental_data.transportation.primary_mode|default('N/A') }}</p>
+                <p><strong>Miles per Day:</strong> {{ user.environmental_data.transportation.miles_per_day|default('N/A') }}</p>
+                <p><strong>Diet Type:</strong> {{ user.environmental_data.diet.type|default('N/A') }}</p>
+                <p><strong>Composting:</strong> {{ user.environmental_data.diet.composting|default(false) and 'Yes' or 'No' }}</p>
             </div>
         </section>
-        <!-- Center Panel - 3D Model -->
-        <div class="score-card">
-        <div id="container">
-         </div> 
-        <div id="container2">
-            <div class="chart-grid">
-                <div class="chart-container">
-                    <canvas id="radarChart"></canvas>
-                </div>
-                <div class="chart-container">
-                    <canvas id="environmentalChart"></canvas>
-                </div>
-                <div class="chart-container">
-                    <canvas id="healthChart"></canvas>
-                </div>
-            </div>
-        </div>
-        </div>
 
-        <!-- Right Panel -->
-        
+        <!-- Health Section -->
+        <section id="health-section">
+            <div class="score-card">
+                <h3>❤️ Health Data</h3>
+                <p><strong>Exercise Frequency:</strong> {{ user.health_data.exercise.frequency|default('N/A') }}</p>
+                <p><strong>Average Sleep Hours:</strong> {{ user.health_data.sleep.average_hours|default('N/A') }}</p>
+            </div>
+        </section>
+
+        <!-- Simulations -->
         <section id="simulation-section">
             <div class="score-card">
-            <h2>What-If Simulations</h2>
-            <div>
+                <h3>🛠️ What-If Simulations</h3>
                 <form id="simulation-form">
-                    <div class="form-group">
+                    <div>
                         <label for="change-type">Change Type:</label>
-                        <select id="change-type" name="change-type" class="simulation-input" required>
+                        <select id="change-type" name="change-type" required>
                             <option value="transportation">Transportation</option>
                             <option value="diet">Diet</option>
                             <option value="exercise">Exercise</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="change-description">Proposed Change:</label>
-                        <input type="text" 
-                               id="change-description" 
-                               name="change-description"
-                               class="simulation-input" 
-                               placeholder="e.g., Use public transit 3 days/week"
-                               required
-                               style="font-size: smaller;">
+                    <div>
+                        <label for="description">Description:</label>
+                        <input type="text" id="description" name="description" required>
                     </div>
-                    <button type="submit" class="cta-button simulation-button">
-                        Simulate Impact
-                    </button>
+                    <button type="submit">Simulate</button>
                 </form>
             </div>
-            <div id="simulation-results" class="scroll-triggered">
-                <!-- Results will be dynamically populated here -->
-            </div>
-        </div>
-        
-        <div class="score-card">
-            <h3>🌍 Carbon Footprint</h3>
-            <p class="main-score">{{ "%.1f"|format(twin_state.carbon_footprint) }} tons/year</p>
-            <p class="comparison">Global Average: 4 tons/year</p>
-            {% if twin_state.combined_score %}
-            <div class="combined-score">
-                <span>Combined Score:</span>
-                <span>{{ "%.1f"|format(twin_state.combined_score) }}/100</span>
-            </div>
-            {% endif %}
-        </div>
         </section>
     </div>
 </div>
-
-<!-- Pass template variables to JavaScript -->
-<script>
-    window.INITIAL_DATA = {
-        healthScore: {{ twin_state.health.overall_score }},
-        ecoScore: {{ twin_state.environmental.overall_score }},
-        modelPath: "{{ url_for('static', filename='models/BreathingIdle.fbx') }}"
-    };
-</script>
-
-<!-- Three.js imports -->
-<script type="importmap">
-    {
-        "imports": {
-            "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js",
-            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/"
-        }
-    }
-</script>
-
-<!-- Load dashboard JavaScript -->
-<script type="module" src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-    <section id="health-analysis-section" class="dashboard-section scroll-triggered">
-        <h2>Wellness Analysis</h2>
-        <div class="wellness-container">
-            <div class="webcam-container">
-                <video id="webcam" playsinline autoplay></video>
-                <canvas id="webcam-canvas" style="display: none;"></canvas>
-                <div class="capture-controls">
-                    <button id="start-camera" class="cta-button camera-button">
-                        📹 Start Camera
-                    </button>
-                    <button id="capture-image" class="cta-button capture-button" disabled>
-                        📸 Capture & Analyze
-                    </button>
-                </div>
-            </div>
-            <div class="analysis-results" id="analysis-results">
-                <div class="results-container">
-                    <h3>Wellness Insights</h3>
-                    <div id="loading-analysis" class="loading-spinner" style="display: none;">
-                        <div class="spinner"></div>
-                        <p>Analyzing wellness factors...</p>
-                    </div>
-                    <div id="analysis-content">
-                        <!-- Results will be populated here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="recommendations-section" class="dashboard-section scroll-triggered">
-        <h2>Smart Recommendations</h2>
-        <div class="recommendations-container">
-            <div class="recommendations-grid" id="recommendations-grid">
-                <!-- Recommendations will be populated here -->
-                <div class="loading-spinner">
-                    <div class="spinner"></div>
-                    <p>Loading recommendations...</p>
-                </div>
-            </div>
-            <button id="refresh-recommendations" class="cta-button recommendations-button">
-                ↻ Refresh Recommendations
-            </button>
-        </div>
-    </section>
-
-    <!-- Simulation Section -->
-    <!-- Replace the existing simulation section in dashboard.html -->
-
-<!-- Load Chart.js first -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- Then load your twin state data -->
-<script id="twin-state-data" type="application/json">
-    {{ twin_state|tojson|safe }}
-</script>
-<!-- Load your custom scripts last -->
-<script src="{{ url_for('static', filename='js/digital-twin.js') }}"></script>
-<script src="{{ url_for('static', filename='js/dashboard-charts.js') }}"></script>
-
 {% endblock %}
+

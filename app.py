@@ -45,24 +45,25 @@ def redirect_after_login():
     return redirect(url_for('dashboard'))
 
 # Dashboard Page
-@app.route('/dashboard')
+
+@app.route("/dashboard")
 def dashboard():
-    if 'user' not in session:
-        return redirect(url_for('login'))
-    
-    username = session['user']
-    
-    # For admin user, use mock data
-    if username == 'admin':
-        return render_template('dashboard.html', 
-                             username=username,
-                             twin_state=mock_twin_state)
-    
-    # For other users, create new Digital Twin with default state
-    twin = DigitalTwin(username)
-    return render_template('dashboard.html', 
-                         username=username,
-                         twin_state=twin.current_state)
+    # Ensure the user is logged in
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    username = session["user"]
+
+    # Connect to MongoDB and fetch user data
+    user = find_user(username)
+    print(user)
+    if not user:
+        return redirect(url_for("complete_profile_page"))
+
+    # Pass user data to the template
+    return render_template("dashboard.html", 
+                           user=user)
+
 
 # API endpoint for Digital Twin simulation
 @app.route('/api/simulate', methods=['POST'])
